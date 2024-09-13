@@ -44,4 +44,22 @@ public class OrdersService
 
         return order.OrderId;
     }
+
+    public async Task<OrderWithStatus> GetOrderWithStatus(int orderId)
+    {
+        using var db = _contextFactory.CreateDbContext();
+
+        var order = await db.Orders
+            .Where(o => o.OrderId == orderId)
+            .Include(o => o.Pizzas).ThenInclude(p => p.Special)
+            .Include(o => o.Pizzas).ThenInclude(p => p.Toppings).ThenInclude(t => t.Topping)
+            .SingleOrDefaultAsync();
+
+        if (order == null)
+        {
+            throw new Exception("NotFound");
+        }
+
+        return OrderWithStatus.FromOrder(order);
+    }
 }

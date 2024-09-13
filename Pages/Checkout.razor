@@ -60,6 +60,6 @@
         isSubmitting = true;
         var newOrderId = await OrdersService.PlaceOrder(OrderState.Order);
         OrderState.ResetOrder();
-        NavigationManager.NavigateTo("/myorders");
+        NavigationManager.NavigateTo($"myorders/{newOrderId}");
     }
 }
